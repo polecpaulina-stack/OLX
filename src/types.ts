@@ -167,3 +167,42 @@ export interface ContentAnalysis {
         upper: { count: number; commonWords: string[]; averagePhotoCount: number | null };
     };
 }
+
+export interface FetchRequest {
+    url: URL;
+    kind: 'search' | 'detail';
+    attempt: number;
+}
+
+export interface FetchResult {
+    html: string;
+    statusCode: number;
+    finalUrl: string;
+}
+
+export interface PageFetcher {
+    fetchHtml(request: FetchRequest): Promise<FetchResult>;
+}
+
+export interface CollectionFailure {
+    url: string;
+    stage: 'search' | 'detail';
+    reason: string;
+}
+
+export interface CollectionResult {
+    listings: NormalizedListing[];
+    excludedFailures: CollectionFailure[];
+    counts: { searchPages: number; candidates: number; detailAttempts: number; saved: number; failed: number };
+    warnings: string[];
+    partial: boolean;
+    selectorDrift: { attempted: number; failures: number; ratio: number; terminal: boolean };
+}
+
+export interface CollectorDependencies {
+    httpFetcher: PageFetcher;
+    browserFetcher: PageFetcher;
+    saveCheckpoint(listing: NormalizedListing): Promise<void> | void;
+    now(): Date;
+    sleep?(milliseconds: number): Promise<void> | void;
+}
