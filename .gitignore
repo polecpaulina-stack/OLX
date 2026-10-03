@@ -1,7 +1,9 @@
 node_modules/
 dist/
+dist-smoke/
 storage/
 apify_storage/
 coverage/
 .env
 *.log
+*.tsbuildinfo

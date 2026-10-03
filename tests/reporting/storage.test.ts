@@ -1,11 +1,14 @@
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it, vi } from 'vitest';
-import { writeActorOutputs } from '../../src/reporting/storage.js';
+import { serializeApifyValue, writeActorOutputs } from '../../src/reporting/storage.js';
 import { buildReportModel } from '../../src/reporting/report-model.js';
 import type { StoragePort } from '../../src/types.js';
 import { analyses, collection, reportInput, reportPlan, scored } from './helpers.js';
 
 describe('writeActorOutputs', () => {
+    it('serializes JSON values for the Apify contentType contract', () => {
+        expect(serializeApifyValue({ ok: true }, 'application/json')).toBe('{\n  "ok": true\n}');
+    });
     it('writes one row per accepted offer and exact capped artifacts', async () => {
         const storage: StoragePort = { pushOffer: vi.fn(), setArtifact: vi.fn(), setStatus: vi.fn() };
         const model = buildReportModel(reportInput, reportPlan, collection, scored, analyses);

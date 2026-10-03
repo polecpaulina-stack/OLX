@@ -34,6 +34,7 @@ const inputSchema = z.object({
     expectedPrice: z.number().min(0).optional().transform((value) => value ?? null),
     deliveryMode: z.enum(['local', 'shipping', 'both']),
     postalCode: z.string().regex(/^\d{2}-\d{3}$/u).default('55-002'),
+    locationName: requiredText.default('Kamieniec Wrocławski'),
     radiusKm: z.number().int().min(1).max(100).default(50),
     manualQueries: normalizedStringList,
     manualSearchUrls: normalizedStringList,

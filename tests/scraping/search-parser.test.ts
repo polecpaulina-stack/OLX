@@ -8,7 +8,7 @@ import type { SearchRequest } from '../../src/types.js';
 const html = readFileSync(fileURLToPath(new URL('../fixtures/search/basic.html', import.meta.url)), 'utf8');
 const source: SearchRequest = {
     source: 'automatic', segment: 'local', query: 'opony zimowe', manualUrl: null,
-    postalCode: '55-002', radiusKm: 50, shippingOnly: false,
+    postalCode: '55-002', locationName: 'Kamieniec Wrocławski', radiusKm: 50, shippingOnly: false,
 };
 
 describe('parseSearchResults', () => {

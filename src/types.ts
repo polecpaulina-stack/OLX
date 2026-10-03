@@ -18,6 +18,7 @@ export interface ActorInput {
     expectedPrice?: number;
     deliveryMode: DeliveryMode;
     postalCode?: string;
+    locationName?: string;
     radiusKm?: number;
     manualQueries?: string[];
     manualSearchUrls?: string[];
@@ -36,6 +37,7 @@ export interface ValidatedInput {
     expectedPrice: number | null;
     deliveryMode: DeliveryMode;
     postalCode: string;
+    locationName: string;
     radiusKm: number;
     manualQueries: string[];
     manualSearchUrls: string[];
@@ -50,6 +52,7 @@ export interface SearchRequest {
     query: string | null;
     manualUrl: string | null;
     postalCode: string | null;
+    locationName: string | null;
     radiusKm: number | null;
     shippingOnly: boolean;
 }
@@ -205,6 +208,12 @@ export interface CollectorDependencies {
     saveCheckpoint(listing: NormalizedListing): Promise<void> | void;
     now(): Date;
     sleep?(milliseconds: number): Promise<void> | void;
+}
+
+export interface CollectorOptions {
+    maxFetchAttempts?: number;
+    retryDelaysMs?: number[];
+    maxSearchPagesPerRequest?: number;
 }
 
 export interface ReportAnalyses {

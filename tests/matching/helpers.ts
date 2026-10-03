@@ -15,7 +15,7 @@ export function listing(overrides: Partial<NormalizedListing> = {}): NormalizedL
 export function input(overrides: Partial<ValidatedInput> = {}): ValidatedInput {
     return {
         itemName: 'opony zimowe 205/55 R16', category: 'Motoryzacja / Opony', brandModel: 'Michelin Pilot Alpin', condition: 'used',
-        attributes: 'komplet 4 sztuki, 205/55 R16', defects: null, expectedPrice: null, deliveryMode: 'local', postalCode: '55-002', radiusKm: 50,
+        attributes: 'komplet 4 sztuki, 205/55 R16', defects: null, expectedPrice: null, deliveryMode: 'local', postalCode: '55-002', locationName: 'Kamieniec Wrocławski', radiusKm: 50,
         manualQueries: [], manualSearchUrls: [], queryMode: 'merge', maxResults: 50, includePromoted: false, ...overrides,
     };
 }

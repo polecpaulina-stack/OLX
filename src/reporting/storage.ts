@@ -5,6 +5,13 @@ import { renderMarkdown } from './markdown.js';
 
 const MAX_EXCLUDED_RECORDS = 100;
 
+export function serializeApifyValue(value: unknown, contentType: string): string | Buffer {
+    if (Buffer.isBuffer(value)) return value;
+    if (typeof value === 'string') return value;
+    if (contentType === 'application/json') return JSON.stringify(value, null, 2);
+    return String(value);
+}
+
 export async function writeActorOutputs(
     storage: StoragePort,
     offers: ScoredListing[],

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { AccessBlockedError, collectListings, RenderingRequiredError } from '../../src/scraping/collector.js';
 import type { CollectorDependencies, FetchRequest, PageFetcher, SearchPlan } from '../../src/types.js';
 
-const source = { source: 'automatic', segment: 'local', query: 'opony', manualUrl: null, postalCode: '55-002', radiusKm: 50, shippingOnly: false } as const;
+const source = { source: 'automatic', segment: 'local', query: 'opony', manualUrl: null, postalCode: '55-002', locationName: 'Kamieniec Wrocławski', radiusKm: 50, shippingOnly: false } as const;
 const plan: SearchPlan = { generatedQueries: ['opony'], queries: ['opony'], requests: [source] };
 const searchPage = (ids: string[]) => `<html><body>${ids.map((id) => `<article><a href="/d/oferta/test-CID5-ID${id}.html"><h4>Oferta ${id}</h4></a></article>`).join('')}</body></html>`;
 const listingPage = (id: string) => `<html><head><link rel="canonical" href="https://www.olx.pl/d/oferta/test-CID5-ID${id}.html"><script type="application/ld+json">{"@type":"Product","name":"Opony zimowe ${id}","offers":{"price":"500","priceCurrency":"PLN"},"description":"Opis"}</script></head><body><h1>Opony zimowe ${id}</h1></body></html>`;

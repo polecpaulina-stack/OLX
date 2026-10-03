@@ -40,16 +40,16 @@ export function buildOlxSearchUrl(request: SearchRequest): URL {
     if (request.manualUrl !== null) return assertAllowedOlxSearchUrl(request.manualUrl);
     if (!request.query) throw new Error('Automatic and manual-query requests require a query');
 
-    const url = new URL(`/oferty/q-${slugify(request.query)}/`, 'https://www.olx.pl');
+    const prefix = request.segment === 'local' && request.locationName ? `/${slugify(request.locationName)}` : '/oferty';
+    const url = new URL(`${prefix}/q-${slugify(request.query)}/`, 'https://www.olx.pl');
     if (request.segment === 'local') {
-        if (!request.postalCode || request.radiusKm === null) {
-            throw new Error('Local OLX search requires postalCode and radiusKm');
+        if (!request.postalCode || !request.locationName || request.radiusKm === null) {
+            throw new Error('Local OLX search requires postalCode, locationName and radiusKm');
         }
-        url.searchParams.set('search[postcode]', request.postalCode);
         url.searchParams.set('search[dist]', String(request.radiusKm));
     }
     if (request.shippingOnly) {
-        url.searchParams.set('search[filter_enum_delivery][0]', 'delivery');
+        url.searchParams.set('courier', '1');
     }
     return url;
 }

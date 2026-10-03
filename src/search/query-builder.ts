@@ -67,6 +67,7 @@ function requestForQuery(
         query,
         manualUrl: null,
         postalCode: segment === 'local' ? input.postalCode : null,
+        locationName: segment === 'local' ? input.locationName : null,
         radiusKm: segment === 'local' ? input.radiusKm : null,
         shippingOnly: segment === 'shipping',
     };
@@ -96,6 +97,7 @@ export function buildSearchPlan(input: ValidatedInput): SearchPlan {
                 query: null,
                 manualUrl,
                 postalCode: segment === 'local' ? input.postalCode : null,
+                locationName: segment === 'local' ? input.locationName : null,
                 radiusKm: segment === 'local' ? input.radiusKm : null,
                 shippingOnly: segment === 'shipping',
             });

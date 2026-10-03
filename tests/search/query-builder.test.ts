@@ -13,6 +13,7 @@ const input: ValidatedInput = {
     expectedPrice: null,
     deliveryMode: 'local',
     postalCode: '55-002',
+    locationName: 'Kamieniec Wrocławski',
     radiusKm: 50,
     manualQueries: [],
     manualSearchUrls: [],

@@ -1,5 +1,5 @@
 import type {
-    CollectionFailure, CollectionResult, CollectorDependencies, FetchRequest, FetchResult,
+    CollectionFailure, CollectionResult, CollectorDependencies, CollectorOptions, FetchRequest, FetchResult,
     NormalizedListing, SearchCandidate, SearchPlan,
 } from '../types.js';
 import { buildOlxSearchUrl } from '../search/url-builder.js';
@@ -21,19 +21,21 @@ export class AccessBlockedError extends Error {
     public constructor(message: string) { super(message); this.name = 'AccessBlockedError'; }
 }
 
-async function fetchWithPolicy(request: Omit<FetchRequest, 'attempt'>, deps: CollectorDependencies): Promise<FetchResult> {
-    for (let attempt = 1; attempt <= MAX_FETCH_ATTEMPTS; attempt += 1) {
+async function fetchWithPolicy(request: Omit<FetchRequest, 'attempt'>, deps: CollectorDependencies, options: CollectorOptions): Promise<FetchResult> {
+    const maxAttempts = options.maxFetchAttempts ?? MAX_FETCH_ATTEMPTS;
+    const delays = options.retryDelaysMs ?? [...RETRY_DELAYS_MS];
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
         try {
             const result = await deps.httpFetcher.fetchHtml({ ...request, attempt });
             if (result.statusCode === 403 || result.statusCode === 429) throw new AccessBlockedError(`HTTP ${result.statusCode}`);
-            if (result.statusCode >= 500) throw new Error(`HTTP ${result.statusCode}`);
+            if (result.statusCode >= 400) throw new Error(`HTTP ${result.statusCode}`);
             return result;
         } catch (error) {
             if (error instanceof RenderingRequiredError) {
                 return deps.browserFetcher.fetchHtml({ ...request, attempt: 1 });
             }
-            if (attempt === MAX_FETCH_ATTEMPTS) throw error;
-            await deps.sleep?.(RETRY_DELAYS_MS[attempt - 1]);
+            if (attempt === maxAttempts) throw error;
+            await deps.sleep?.(delays[attempt - 1] ?? delays.at(-1) ?? 250);
         }
     }
     throw new Error('Unreachable retry state');
@@ -43,18 +45,18 @@ function candidateIdentity(candidate: SearchCandidate): string {
     return candidate.listingId || candidate.url.split(/[?#]/u, 1)[0];
 }
 
-export async function collectListings(plan: SearchPlan, deps: CollectorDependencies, maxResults: number): Promise<CollectionResult> {
+export async function collectListings(plan: SearchPlan, deps: CollectorDependencies, maxResults: number, options: CollectorOptions = {}): Promise<CollectionResult> {
     const candidates = new Map<string, SearchCandidate>();
     const failures: CollectionFailure[] = [];
     const warnings: string[] = [];
     let searchPages = 0;
 
     for (const source of plan.requests) {
-        for (let page = 1; page <= MAX_SEARCH_PAGES_PER_REQUEST && candidates.size < maxResults; page += 1) {
+        for (let page = 1; page <= (options.maxSearchPagesPerRequest ?? MAX_SEARCH_PAGES_PER_REQUEST) && candidates.size < maxResults; page += 1) {
             const url = buildOlxSearchUrl(source);
             if (page > 1) url.searchParams.set('page', String(page));
             try {
-                const result = await fetchWithPolicy({ url, kind: 'search' }, deps);
+                const result = await fetchWithPolicy({ url, kind: 'search' }, deps, options);
                 searchPages += 1;
                 const parsed = parseSearchResults(result.html, source);
                 for (const candidate of parsed) candidates.set(candidateIdentity(candidate), candidate);
@@ -74,7 +76,7 @@ export async function collectListings(plan: SearchPlan, deps: CollectorDependenc
         if (normalized.length >= maxResults) break;
         detailAttempts += 1;
         try {
-            const result = await fetchWithPolicy({ url: new URL(candidate.url), kind: 'detail' }, deps);
+            const result = await fetchWithPolicy({ url: new URL(candidate.url), kind: 'detail' }, deps, options);
             const raw = parseListing(result.html, new URL(result.finalUrl));
             const item = normalizeListing(raw, {
                 segment: candidate.source.segment,

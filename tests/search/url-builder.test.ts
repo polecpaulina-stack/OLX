@@ -31,16 +31,17 @@ describe('buildOlxSearchUrl', () => {
         query: 'rower dziecięcy 16',
         manualUrl: null,
         postalCode: '55-002',
+        locationName: 'Kamieniec Wrocławski',
         radiusKm: 50,
         shippingOnly: false,
     };
 
-    it('encodes local postcode and radius semantics', () => {
+    it('encodes local place path and radius semantics', () => {
         const url = buildOlxSearchUrl(base);
 
         expect(url.origin).toBe('https://www.olx.pl');
-        expect(url.pathname).toContain('/oferty/q-rower-dzieciecy-16/');
-        expect(url.searchParams.get('search[postcode]')).toBe('55-002');
+        expect(url.pathname).toContain('/kamieniec-wroclawski/q-rower-dzieciecy-16/');
+        expect(url.searchParams.has('search[postcode]')).toBe(false);
         expect(url.searchParams.get('search[dist]')).toBe('50');
         expect(url.searchParams.has('search[filter_enum_delivery][0]')).toBe(false);
     });
@@ -50,13 +51,14 @@ describe('buildOlxSearchUrl', () => {
             ...base,
             segment: 'shipping',
             postalCode: null,
+            locationName: null,
             radiusKm: null,
             shippingOnly: true,
         });
 
         expect(url.searchParams.has('search[postcode]')).toBe(false);
         expect(url.searchParams.has('search[dist]')).toBe(false);
-        expect(url.searchParams.get('search[filter_enum_delivery][0]')).toBe('delivery');
+        expect(url.searchParams.get('courier')).toBe('1');
     });
 
     it('returns a validated manual search URL without rewriting it', () => {

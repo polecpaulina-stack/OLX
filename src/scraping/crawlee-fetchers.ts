@@ -4,7 +4,7 @@ import { AccessBlockedError, RenderingRequiredError } from './collector.js';
 
 const REQUEST_TIMEOUT_MS = 30_000;
 
-export interface CrawleeFetcherOptions { proxyConfiguration?: ProxyConfiguration }
+export interface CrawleeFetcherOptions { proxyConfiguration?: ProxyConfiguration; maxConcurrency?: number }
 
 class HttpFetcher implements PageFetcher {
     public async fetchHtml(request: FetchRequest): Promise<FetchResult> {
@@ -22,7 +22,7 @@ class BrowserFetcher implements PageFetcher {
         let result: FetchResult | null = null;
         const crawler = new PlaywrightCrawler({
             proxyConfiguration: this.options.proxyConfiguration,
-            maxConcurrency: 2,
+            maxConcurrency: this.options.maxConcurrency ?? 2,
             requestHandlerTimeoutSecs: REQUEST_TIMEOUT_MS / 1000,
             maxRequestRetries: 0,
             async requestHandler({ page, request: crawleeRequest, response }) {
