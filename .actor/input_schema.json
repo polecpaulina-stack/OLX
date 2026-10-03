@@ -1,0 +1,127 @@
+{
+  "title": "Analiza konkurencji OLX.pl",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "itemName": {
+      "title": "Nazwa przedmiotu",
+      "type": "string",
+      "description": "Co chcesz sprzedać, np. opony zimowe Michelin Alpin 205/55 R16.",
+      "editor": "textfield",
+      "minLength": 2
+    },
+    "category": {
+      "title": "Kategoria",
+      "type": "string",
+      "description": "Ogólna kategoria przedmiotu. Możesz wpisać własną wartość.",
+      "editor": "textfield"
+    },
+    "brandModel": {
+      "title": "Marka i model",
+      "type": "string",
+      "description": "Marka, model lub inne oznaczenie produktu.",
+      "editor": "textfield"
+    },
+    "condition": {
+      "title": "Stan",
+      "type": "string",
+      "description": "Rzeczywisty stan Twojego przedmiotu.",
+      "editor": "select",
+      "default": "used",
+      "enum": ["new", "like-new", "very-good", "used", "damaged"],
+      "enumTitles": ["Nowy", "Jak nowy", "Bardzo dobry", "Używany", "Uszkodzony"]
+    },
+    "attributes": {
+      "title": "Cechy i parametry",
+      "type": "string",
+      "description": "Rozmiar, wymiary, materiał, rok produkcji i inne ważne cechy.",
+      "editor": "textarea"
+    },
+    "defects": {
+      "title": "Wady i ślady użytkowania",
+      "type": "string",
+      "description": "Wpisz uczciwie wszystkie znane wady.",
+      "editor": "textarea"
+    },
+    "expectedPrice": {
+      "title": "Rozważana cena",
+      "type": "number",
+      "description": "Opcjonalna cena w PLN, którą chcesz porównać z rynkiem.",
+      "editor": "number",
+      "minimum": 0,
+      "unit": "PLN"
+    },
+    "deliveryMode": {
+      "title": "Sposób przekazania",
+      "type": "string",
+      "description": "Dla odbioru osobistego Actor użyje kodu i promienia; dla wysyłki przeszuka całą Polskę.",
+      "editor": "select",
+      "default": "local",
+      "enum": ["local", "shipping", "both"],
+      "enumTitles": ["Odbiór osobisty", "Wysyłka", "Oba warianty"]
+    },
+    "postalCode": {
+      "title": "Kod pocztowy",
+      "type": "string",
+      "description": "Wymagany dla odbioru osobistego. Format NN-NNN.",
+      "editor": "textfield",
+      "default": "55-002",
+      "pattern": "^[0-9]{2}-[0-9]{3}$"
+    },
+    "radiusKm": {
+      "title": "Promień lokalny",
+      "type": "integer",
+      "description": "Promień dla odbioru osobistego.",
+      "editor": "number",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 100,
+      "unit": "km"
+    },
+    "manualQueries": {
+      "title": "Własne frazy wyszukiwania",
+      "type": "array",
+      "description": "Opcjonalne frazy dodatkowe lub jedyne, zależnie od trybu.",
+      "editor": "stringList",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "manualSearchUrls": {
+      "title": "Własne adresy wyszukiwania OLX",
+      "type": "array",
+      "description": "Opcjonalne publiczne adresy wyników wyszukiwania z domeny olx.pl.",
+      "editor": "stringList",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "queryMode": {
+      "title": "Tryb zapytań",
+      "type": "string",
+      "description": "Połącz automatyczne i własne zapytania albo użyj wyłącznie własnych.",
+      "editor": "select",
+      "default": "merge",
+      "enum": ["merge", "manual-only"],
+      "enumTitles": ["Połącz automatyczne i własne", "Tylko własne"]
+    },
+    "maxResults": {
+      "title": "Limit ofert",
+      "type": "integer",
+      "description": "Maksymalna liczba kompletnych ofert w jednym uruchomieniu.",
+      "editor": "number",
+      "default": 100,
+      "minimum": 10,
+      "maximum": 300
+    },
+    "includePromoted": {
+      "title": "Uwzględnij oferty promowane",
+      "type": "boolean",
+      "description": "Oferty promowane będą oznaczone i pokazane osobno w analizie.",
+      "default": true
+    }
+  },
+  "required": ["itemName", "condition", "deliveryMode"]
+}
