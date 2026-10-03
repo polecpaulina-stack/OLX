@@ -114,3 +114,7 @@ export interface NormalizedListing extends RawListing {
     segment: SearchSegment;
     dataCompleteness: number;
 }
+
+export type CategoryAttributeValue = string | number | boolean | null;
+export type CategoryAttributes = Record<string, CategoryAttributeValue>;
+export type CategoryExtractor = (listing: NormalizedListing) => CategoryAttributes;

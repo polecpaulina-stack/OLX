@@ -1,4 +1,4 @@
-import type { NormalizeContext, NormalizedListing, RawListing } from '../types.js';
+import type { CategoryAttributes, NormalizeContext, NormalizedListing, RawListing } from '../types.js';
 import { redactContactData } from './redact.js';
 
 const normalizeWhitespace = (value: string): string => value.trim().replace(/\s+/gu, ' ');
@@ -55,4 +55,8 @@ export function normalizeListing(raw: RawListing, context: NormalizeContext): No
         segment: context.segment,
         dataCompleteness: completeness(raw),
     };
+}
+
+export function mergeCategoryAttributes(listing: NormalizedListing, extracted: CategoryAttributes): CategoryAttributes {
+    return { ...listing.attributesNormalized, ...extracted };
 }
