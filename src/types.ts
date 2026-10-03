@@ -206,3 +206,35 @@ export interface CollectorDependencies {
     now(): Date;
     sleep?(milliseconds: number): Promise<void> | void;
 }
+
+export interface ReportAnalyses {
+    prices: Partial<Record<SearchSegment, PriceAnalysis>>;
+    content: ContentAnalysis;
+}
+
+export interface ReportOffer {
+    listingId: string;
+    url: string;
+    title: string;
+    price: number | null;
+    locationName: string | null;
+    distanceKm: number | null;
+    score: number;
+    matchReasons: string[];
+    attributes: CategoryAttributes;
+    descriptionSummary: string | null;
+}
+
+export interface ReportModel {
+    generatedAt: string;
+    input: ValidatedInput;
+    queries: string[];
+    collectionCounts: CollectionResult['counts'];
+    priceSections: Partial<Record<SearchSegment, PriceAnalysis>>;
+    content: ContentAnalysis;
+    assumptions: string[];
+    missingFields: string[];
+    diagnostics: { partial: boolean; warnings: string[]; selectorDrift: CollectionResult['selectorDrift']; failures: CollectionFailure[] };
+    topOffers: ReportOffer[];
+    otherComparableCount: number;
+}
