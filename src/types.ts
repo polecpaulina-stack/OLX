@@ -128,3 +128,42 @@ export interface RelevanceResult {
 }
 
 export type ScoredListing = NormalizedListing & RelevanceResult;
+
+export interface PriceStatistics {
+    minimum: number | null;
+    maximum: number | null;
+    mean: number | null;
+    median: number | null;
+    lowerQuartile: number | null;
+    upperQuartile: number | null;
+    weightedMedian: number | null;
+}
+
+export interface PriceSlice {
+    count: number;
+    median: number | null;
+}
+
+export interface PriceAnalysis {
+    segment: SearchSegment;
+    counts: { candidates: number; comparable: number; afterOutliers: number; outliers: number };
+    before: PriceStatistics;
+    after: PriceStatistics;
+    outlierListingIds: string[];
+    strategies: { quick: number | null; market: number | null; ambitious: number | null };
+    slices: { promoted: PriceSlice; organic: PriceSlice; private: PriceSlice; business: PriceSlice; shipping: PriceSlice };
+    confidence: 'none' | 'low' | 'medium' | 'high';
+    warnings: string[];
+}
+
+export interface ContentAnalysis {
+    count: number;
+    commonWords: Array<{ word: string; count: number }>;
+    commonPhrases: Array<{ phrase: string; count: number }>;
+    commonAttributes: Array<{ name: string; value: string; count: number }>;
+    averages: { titleLength: number | null; descriptionLength: number | null; photoCount: number | null };
+    priceBandContrasts: {
+        lower: { count: number; commonWords: string[]; averagePhotoCount: number | null };
+        upper: { count: number; commonWords: string[]; averagePhotoCount: number | null };
+    };
+}
