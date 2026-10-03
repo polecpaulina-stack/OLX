@@ -59,3 +59,58 @@ export interface SearchPlan {
     queries: string[];
     requests: SearchRequest[];
 }
+
+export interface Coordinates {
+    latitude: number;
+    longitude: number;
+}
+
+export interface SearchCandidate {
+    listingId: string;
+    url: string;
+    title: string;
+    isPromoted: boolean;
+    source: SearchRequest;
+}
+
+export interface RawListing {
+    listingId: string;
+    url: string;
+    canonicalUrl: string;
+    title: string;
+    priceText: string | null;
+    currency: string | null;
+    categoryPath: string[];
+    condition: string | null;
+    attributesRaw: Record<string, string>;
+    locationName: string | null;
+    voivodeship: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    shippingAvailable: boolean | null;
+    sellerType: 'private' | 'business' | null;
+    publishedAt: string | null;
+    refreshedAt: string | null;
+    description: string | null;
+    photoCount: number | null;
+    isPromoted: boolean;
+}
+
+export interface NormalizeContext {
+    segment: SearchSegment;
+    matchedQueries: string[];
+    originCoordinates: Coordinates | null;
+    locationFilterMatched: boolean;
+}
+
+export interface NormalizedListing extends RawListing {
+    price: number | null;
+    priceNegotiable: boolean;
+    attributesNormalized: Record<string, string | number | boolean | null>;
+    distanceKm: number | null;
+    locationFilterMatched: boolean;
+    descriptionClean: string | null;
+    matchedQueries: string[];
+    segment: SearchSegment;
+    dataCompleteness: number;
+}
