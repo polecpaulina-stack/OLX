@@ -112,9 +112,19 @@ export interface NormalizedListing extends RawListing {
     descriptionClean: string | null;
     matchedQueries: string[];
     segment: SearchSegment;
+    matchedSegments?: SearchSegment[];
     dataCompleteness: number;
 }
 
 export type CategoryAttributeValue = string | number | boolean | null;
 export type CategoryAttributes = Record<string, CategoryAttributeValue>;
 export type CategoryExtractor = (listing: NormalizedListing) => CategoryAttributes;
+
+export interface RelevanceResult {
+    score: number;
+    included: boolean;
+    matchReasons: string[];
+    exclusionReasons: string[];
+}
+
+export type ScoredListing = NormalizedListing & RelevanceResult;
