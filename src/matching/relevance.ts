@@ -43,6 +43,7 @@ export function scoreRelevance(listing: NormalizedListing, input: ValidatedInput
     if (/^\s*(?:kupię|poszukuję|szukam)(?=\s|$)/iu.test(listing.title)) exclusions.push('ogłoszenie kupna, nie sprzedaży');
     if (/\b(?:wraz z|zestaw z|komplet z)\b/iu.test(listing.title)) exclusions.push('nieporównywalny pakiet');
     if (numericConflict(listing, input)) exclusions.push('sprzeczne kluczowe parametry liczbowe');
+    if (listing.condition && !expectedCondition(input.condition).test(listing.condition)) exclusions.push('niezgodny stan produktu');
 
     const reasons: string[] = [];
     const weighted: Array<[number, number]> = [];

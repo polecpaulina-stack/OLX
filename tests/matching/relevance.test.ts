@@ -30,6 +30,8 @@ describe('scoreRelevance', () => {
     it('notes condition mismatch without allowing the score outside 0–1', () => {
         const result = scoreRelevance(listing({ condition: 'nowe' }), input({ condition: 'used' }));
         expect(result.matchReasons).not.toContain('zgodny stan');
+        expect(result.included).toBe(false);
+        expect(result.exclusionReasons).toContain('niezgodny stan produktu');
         expect(result.score).toBeGreaterThanOrEqual(0);
         expect(result.score).toBeLessThanOrEqual(1);
     });

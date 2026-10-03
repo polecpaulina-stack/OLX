@@ -46,7 +46,7 @@ function candidateIdentity(candidate: SearchCandidate): string {
 }
 
 export async function collectListings(plan: SearchPlan, deps: CollectorDependencies, maxResults: number, options: CollectorOptions = {}): Promise<CollectionResult> {
-    const candidates = new Map<string, SearchCandidate>();
+    const candidates = new Map<string, { candidate: SearchCandidate; sources: SearchCandidate['source'][] }>();
     const failures: CollectionFailure[] = [];
     const warnings: string[] = [];
     let searchPages = 0;
@@ -59,7 +59,12 @@ export async function collectListings(plan: SearchPlan, deps: CollectorDependenc
                 const result = await fetchWithPolicy({ url, kind: 'search' }, deps, options);
                 searchPages += 1;
                 const parsed = parseSearchResults(result.html, source);
-                for (const candidate of parsed) candidates.set(candidateIdentity(candidate), candidate);
+                for (const candidate of parsed) {
+                    const key = candidateIdentity(candidate);
+                    const previous = candidates.get(key);
+                    if (previous) previous.sources.push(candidate.source);
+                    else candidates.set(key, { candidate, sources: [candidate.source] });
+                }
                 if (parsed.length === 0) break;
             } catch (error) {
                 failures.push({ url: url.href, stage: 'search', reason: error instanceof Error ? error.message : String(error) });
@@ -72,7 +77,7 @@ export async function collectListings(plan: SearchPlan, deps: CollectorDependenc
     const normalized: NormalizedListing[] = [];
     let detailAttempts = 0;
     let parserFailures = 0;
-    for (const candidate of candidates.values()) {
+    for (const { candidate, sources } of candidates.values()) {
         if (normalized.length >= maxResults) break;
         detailAttempts += 1;
         try {
@@ -80,10 +85,11 @@ export async function collectListings(plan: SearchPlan, deps: CollectorDependenc
             const raw = parseListing(result.html, new URL(result.finalUrl));
             const item = normalizeListing(raw, {
                 segment: candidate.source.segment,
-                matchedQueries: candidate.source.query ? [candidate.source.query] : [],
+                matchedQueries: [...new Set(sources.flatMap((source) => source.query ? [source.query] : []))],
                 originCoordinates: null,
-                locationFilterMatched: candidate.source.segment !== 'local' || Boolean(candidate.source.postalCode),
+                locationFilterMatched: sources.every((source) => source.segment !== 'local' || Boolean(source.postalCode)),
             });
+            item.matchedSegments = [...new Set(sources.map((source) => source.segment))];
             normalized.push(item);
             await deps.saveCheckpoint(item);
         } catch (error) {

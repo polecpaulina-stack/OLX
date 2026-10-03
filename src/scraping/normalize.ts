@@ -15,7 +15,7 @@ function parsePrice(value: string | null): number | null {
 function normalizeAttributes(values: Record<string, string>): Record<string, string> {
     return Object.fromEntries(
         Object.entries(values)
-            .map(([key, value]) => [normalizeWhitespace(key), normalizeWhitespace(value)] as const)
+            .map(([key, value]) => [redactContactData(normalizeWhitespace(key)), redactContactData(normalizeWhitespace(value))] as const)
             .filter(([key, value]) => key.length > 0 && value.length > 0),
     );
 }
@@ -36,13 +36,15 @@ function completeness(listing: RawListing): number {
 
 export function normalizeListing(raw: RawListing, context: NormalizeContext): NormalizedListing {
     const attributesRaw = normalizeAttributes(raw.attributesRaw);
+    const descriptionClean = raw.description ? redactContactData(normalizeWhitespace(raw.description)) : null;
     const coordinates = raw.latitude !== null && raw.longitude !== null
         ? { latitude: raw.latitude, longitude: raw.longitude }
         : null;
     return {
         ...raw,
-        title: normalizeWhitespace(raw.title),
+        title: redactContactData(normalizeWhitespace(raw.title)),
         attributesRaw,
+        description: descriptionClean,
         price: parsePrice(raw.priceText),
         priceNegotiable: /negocjac/iu.test(raw.priceText ?? ''),
         attributesNormalized: { ...attributesRaw },
@@ -50,7 +52,7 @@ export function normalizeListing(raw: RawListing, context: NormalizeContext): No
             ? haversineKm(context.originCoordinates, coordinates)
             : null,
         locationFilterMatched: context.locationFilterMatched,
-        descriptionClean: raw.description ? redactContactData(normalizeWhitespace(raw.description)) : null,
+        descriptionClean,
         matchedQueries: [...context.matchedQueries],
         segment: context.segment,
         dataCompleteness: completeness(raw),

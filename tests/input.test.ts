@@ -53,6 +53,11 @@ describe('validateInput', () => {
         expect(result.deliveryMode).toBe('shipping');
     });
 
+    it('ignores local-only location fields in shipping mode', () => {
+        const result = validateInput({ ...requiredInput, deliveryMode: 'shipping', postalCode: 'invalid', locationName: '', radiusKm: 0 });
+        expect(result).toMatchObject({ deliveryMode: 'shipping', postalCode: '55-002', locationName: 'Kamieniec Wrocławski', radiusKm: 50 });
+    });
+
     it.each([0, 101])('rejects a local radius outside the 1-100 km range: %s', (radiusKm) => {
         expect(() => validateInput({ ...requiredInput, radiusKm })).toThrow(/radiusKm/i);
     });

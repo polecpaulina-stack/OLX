@@ -38,6 +38,22 @@ describe('collectListings', () => {
         expect(browser.fetchHtml).toHaveBeenCalledTimes(1);
     });
 
+    it('merges queries and segments before a single detail fetch in both mode', async () => {
+        const local = { ...source, query: 'opony lokalnie' };
+        const shipping = { ...source, segment: 'shipping' as const, query: 'opony wysyłka', postalCode: null, locationName: null, radiusKm: null, shippingOnly: true };
+        const bothPlan: SearchPlan = { generatedQueries: [], queries: ['opony lokalnie', 'opony wysyłka'], requests: [local, shipping] };
+        let detailCalls = 0;
+        const http: PageFetcher = { fetchHtml: vi.fn(async (request) => {
+            if (request.kind === 'search') return { html: request.url.searchParams.has('page') ? searchPage([]) : searchPage(['A']), statusCode: 200, finalUrl: request.url.href };
+            detailCalls += 1;
+            return { html: listingPage('A'), statusCode: 200, finalUrl: request.url.href };
+        }) };
+        const result = await collectListings(bothPlan, deps(http), 2);
+        expect(detailCalls).toBe(1);
+        expect(result.listings[0].matchedSegments).toEqual(['local', 'shipping']);
+        expect(result.listings[0].matchedQueries).toEqual(['opony lokalnie', 'opony wysyłka']);
+    });
+
     it('retries access blocks three times with increasing delays, never using a browser', async () => {
         const http: PageFetcher = { fetchHtml: vi.fn(async () => { throw new AccessBlockedError('429'); }) };
         const dependencies = deps(http);

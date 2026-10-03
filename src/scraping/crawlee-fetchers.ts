@@ -7,8 +7,10 @@ const REQUEST_TIMEOUT_MS = 30_000;
 export interface CrawleeFetcherOptions { proxyConfiguration?: ProxyConfiguration; maxConcurrency?: number }
 
 class HttpFetcher implements PageFetcher {
+    public constructor(private readonly options: CrawleeFetcherOptions) {}
     public async fetchHtml(request: FetchRequest): Promise<FetchResult> {
-        const response = await gotScraping({ url: request.url, timeout: { request: REQUEST_TIMEOUT_MS }, retry: { limit: 0 } });
+        const proxyUrl = await this.options.proxyConfiguration?.newUrl();
+        const response = await gotScraping({ url: request.url, proxyUrl, timeout: { request: REQUEST_TIMEOUT_MS }, retry: { limit: 0 } });
         if (response.statusCode === 403 || response.statusCode === 429) throw new AccessBlockedError(`HTTP ${response.statusCode}`);
         const html = response.body;
         if (!html || /enable javascript|włącz javascript/iu.test(html)) throw new RenderingRequiredError('OLX response requires browser rendering');
@@ -37,5 +39,5 @@ class BrowserFetcher implements PageFetcher {
 }
 
 export function createCrawleeFetchers(options: CrawleeFetcherOptions = {}): { httpFetcher: PageFetcher; browserFetcher: PageFetcher } {
-    return { httpFetcher: new HttpFetcher(), browserFetcher: new BrowserFetcher(options) };
+    return { httpFetcher: new HttpFetcher(options), browserFetcher: new BrowserFetcher(options) };
 }

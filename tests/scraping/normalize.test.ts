@@ -28,6 +28,19 @@ describe('normalizeListing', () => {
         expect(result.attributesRaw).toEqual({ Rozmiar: '205/55 R16' });
         expect(result.descriptionClean).toContain('[DANE KONTAKTOWE]');
         expect(result.descriptionClean).toContain('123456789');
+        expect(result.description).toBe(result.descriptionClean);
+    });
+
+    it('redacts contact data from every free-text field persisted in normalized records', () => {
+        const result = normalizeListing({
+            ...raw,
+            title: 'Opony, kontakt test@example.com',
+            attributesRaw: { Telefon: '600 700 800', Rozmiar: '205/55 R16' },
+        }, context);
+        expect(JSON.stringify({ title: result.title, description: result.description, attributesRaw: result.attributesRaw }))
+            .not.toMatch(/test@example\.com|600 700 800/u);
+        expect(result.title).toContain('[DANE KONTAKTOWE]');
+        expect(result.attributesRaw.Telefon).toContain('[DANE KONTAKTOWE]');
     });
 
     it.each([

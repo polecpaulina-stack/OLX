@@ -44,5 +44,13 @@ const inputSchema = z.object({
 });
 
 export function validateInput(raw: unknown): ValidatedInput {
+    if (typeof raw === 'object' && raw !== null && (raw as Record<string, unknown>).deliveryMode === 'shipping') {
+        return inputSchema.parse({
+            ...(raw as Record<string, unknown>),
+            postalCode: '55-002',
+            locationName: 'Kamieniec Wrocławski',
+            radiusKm: 50,
+        });
+    }
     return inputSchema.parse(raw);
 }

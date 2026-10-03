@@ -7,7 +7,8 @@ import { createCrawleeFetchers } from './scraping/crawlee-fetchers.js';
 import type { StoragePort } from './types.js';
 
 await Actor.main(async () => {
-    const proxyConfiguration = await Actor.createProxyConfiguration();
+    const proxyConfigured = Actor.isAtHome() || Boolean(process.env.APIFY_TOKEN || process.env.APIFY_PROXY_PASSWORD);
+    const proxyConfiguration = proxyConfigured ? await Actor.createProxyConfiguration() : undefined;
     const fetchers = createCrawleeFetchers({ proxyConfiguration: proxyConfiguration ?? undefined });
     const storage: StoragePort = {
         pushOffer: async (record) => Actor.pushData(record),
