@@ -1,0 +1,34 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "listingId": { "type": "string" },
+      "url": { "type": "string" },
+      "title": { "type": "string" },
+      "price": { "type": ["number", "null"] },
+      "currency": { "type": ["string", "null"] },
+      "locationName": { "type": ["string", "null"] },
+      "distanceKm": { "type": ["number", "null"] },
+      "shippingAvailable": { "type": ["boolean", "null"] },
+      "score": { "type": "number" },
+      "matchReasons": { "type": "array", "items": { "type": "string" } },
+      "attributesNormalized": { "type": "object" },
+      "isPromoted": { "type": "boolean" }
+    },
+    "required": ["listingId", "url", "title", "score"]
+  },
+  "views": {
+    "overview": {
+      "title": "Porównywalne oferty OLX",
+      "transformation": { "fields": ["title", "price", "locationName", "distanceKm", "shippingAvailable", "score", "isPromoted", "url", "matchReasons", "attributesNormalized"] },
+      "display": { "component": "table", "properties": {
+        "title": { "label": "Tytuł", "format": "text" }, "price": { "label": "Cena", "format": "number" },
+        "locationName": { "label": "Lokalizacja", "format": "text" }, "distanceKm": { "label": "Odległość km", "format": "number" },
+        "shippingAvailable": { "label": "Wysyłka", "format": "boolean" }, "score": { "label": "Zgodność", "format": "number" },
+        "isPromoted": { "label": "Promowana", "format": "boolean" }, "url": { "label": "Oferta", "format": "link" },
+        "matchReasons": { "label": "Powody", "format": "array" }, "attributesNormalized": { "label": "Parametry", "format": "object" }
+      } }
+    }
+  }
+}

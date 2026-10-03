@@ -3,7 +3,7 @@ import type { PriceAnalysis, ReportModel } from '../types.js';
 const money = (value: number | null): string => value === null ? 'brak' : `${value.toLocaleString('pl-PL')} zł`;
 
 function priceSection(name: string, analysis: PriceAnalysis): string {
-    return `## Ceny — ${name}\n\nPewność: **${analysis.confidence}**, próba po odrzuceniu wartości skrajnych: ${analysis.counts.afterOutliers}.\n\n| Strategia | Cena |\n|---|---:|\n| Szybka sprzedaż | ${money(analysis.strategies.quick)} |\n| Cena rynkowa | ${money(analysis.strategies.market)} |\n| Cena ambitna | ${money(analysis.strategies.ambitious)} |`;
+    return `## Ceny — ${name}\n\nPewność: **${analysis.confidence}**, próba po odrzuceniu wartości skrajnych: ${analysis.counts.afterOutliers}.\n\n| Strategia | Cena |\n|---|---:|\n| Szybka sprzedaż | ${money(analysis.strategies.quick)} |\n| Cena rynkowa | ${money(analysis.strategies.market)} |\n| Cena ambitna | ${money(analysis.strategies.ambitious)} |\n\n${analysis.warnings.map((warning) => `- ${warning}`).join('\n')}`;
 }
 
 export function renderMarkdown(model: ReportModel): string {

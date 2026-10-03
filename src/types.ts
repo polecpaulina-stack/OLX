@@ -238,3 +238,24 @@ export interface ReportModel {
     topOffers: ReportOffer[];
     otherComparableCount: number;
 }
+
+export interface StoragePort {
+    pushOffer(record: ScoredListing): Promise<void> | void;
+    setArtifact(name: string, value: unknown, contentType: string): Promise<void> | void;
+    setStatus(message: string): Promise<void> | void;
+}
+
+export interface RuntimeDependencies {
+    getInput(): Promise<unknown>;
+    collect(plan: SearchPlan, input: ValidatedInput): Promise<CollectionResult>;
+    storage: StoragePort;
+    now(): Date;
+}
+
+export interface RunSummary {
+    itemName: string;
+    comparableOffers: number;
+    collectedOffers: number;
+    partial: boolean;
+    confidence: Partial<Record<SearchSegment, PriceAnalysis['confidence']>>;
+}
