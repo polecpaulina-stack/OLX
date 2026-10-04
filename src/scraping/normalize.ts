@@ -6,9 +6,11 @@ const normalizeWhitespace = (value: string): string => value.trim().replace(/\s+
 function parsePrice(value: string | null): number | null {
     if (!value) return null;
     if (/za darmo/iu.test(value)) return 0;
-    const match = value.replace(/\s/gu, '').replace(',', '.').match(/\d+(?:\.\d+)?/u);
-    if (!match) return null;
-    const parsed = Number(match[0]);
+    const currencyMatch = value.match(/(\d[\d\s]*(?:[.,]\d{1,2})?)\s*(?:zł|PLN)(?!\p{L})/iu);
+    const plainMatch = value.match(/^\s*(\d[\d\s]*(?:[.,]\d{1,2})?)\s*$/u);
+    const priceText = currencyMatch?.[1] ?? plainMatch?.[1];
+    if (!priceText) return null;
+    const parsed = Number(priceText.replace(/\s/gu, '').replace(',', '.'));
     return Number.isFinite(parsed) ? parsed : null;
 }
 

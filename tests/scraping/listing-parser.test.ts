@@ -39,4 +39,26 @@ describe('parseListing', () => {
         expect(result.locationName).toBeNull();
         expect(result.description).toBeNull();
     });
+
+    it('ignores embedded CSS when reading the visible listing price', () => {
+        const styledPriceHtml = `
+            <html>
+                <head>
+                    <link rel="canonical" href="https://www.olx.pl/d/oferta/opony-ID1ct1jK.html">
+                    <script type="application/ld+json">
+                        {"@type":"Product","name":"Opony zimowe","offers":{"price":"579","priceCurrency":"PLN"}}
+                    </script>
+                </head>
+                <body>
+                    <div data-testid="ad-price-container">
+                        <style>.css-19feqhn{font-size:24px}.css-yauxmy{font-weight:700}</style>
+                        <h3>579 zł</h3>
+                    </div>
+                </body>
+            </html>`;
+
+        const result = parseListing(styledPriceHtml, new URL('https://www.olx.pl/d/oferta/opony-ID1ct1jK.html'));
+
+        expect(result.priceText).toBe('579 zł');
+    });
 });

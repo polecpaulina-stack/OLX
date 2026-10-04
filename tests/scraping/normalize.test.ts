@@ -46,6 +46,7 @@ describe('normalizeListing', () => {
     it.each([
         ['Za darmo', 0],
         ['brak ceny', null],
+        ['.css-19feqhn{font-size:24px}.css-yauxmy{font-weight:700}579 zł', 579],
     ])('normalizes price %s to %s', (priceText, expected) => {
         expect(normalizeListing({ ...raw, priceText }, context).price).toBe(expected);
     });

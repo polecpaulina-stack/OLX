@@ -56,13 +56,15 @@ export function parseListing(html: string, url: URL): RawListing {
     const bodyText = $('body').text();
     const sellerText = attributesRaw['Typ sprzedawcy'] ?? '';
     const images = structured?.image;
+    const priceElement = $('[data-testid="ad-price-container"]').first().clone();
+    priceElement.find('style, script, noscript').remove();
 
     return {
         listingId,
         url: url.href,
         canonicalUrl,
         title,
-        priceText: stringValue($('[data-testid="ad-price-container"]').first().text()) ?? stringValue(offers?.price),
+        priceText: stringValue(priceElement.text()) ?? stringValue(offers?.price),
         currency: stringValue(offers?.priceCurrency),
         categoryPath: [],
         condition: attributesRaw.Stan ?? null,
