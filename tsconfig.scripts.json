@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist-smoke"
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["tests", "dist", "dist-smoke", "node_modules", "storage"]
+}

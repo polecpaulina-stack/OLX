@@ -1,0 +1,11 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "Wyniki analizy konkurencji OLX",
+  "properties": {
+    "dataset": { "type": "string", "title": "Porównywalne oferty", "template": "{{links.apiDefaultDatasetUrl}}/items" },
+    "report": { "type": "string", "title": "Raport Markdown", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/REPORT.md" },
+    "reportHtml": { "type": "string", "title": "Raport HTML", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/REPORT.html" },
+    "chatGptPrompt": { "type": "string", "title": "Pakiet do ChatGPT", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/CHATGPT_PROMPT.md" },
+    "summary": { "type": "string", "title": "Podsumowanie", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/RUN_SUMMARY.json" }
+  }
+}

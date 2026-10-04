@@ -1,0 +1,32 @@
+{
+  "name": "olx-market-research-actor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Apify Actor for researching comparable OLX.pl listings before publishing an offer.",
+  "main": "dist/main.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "smoke:live": "tsc -p tsconfig.scripts.json && node dist-smoke/scripts/live-smoke.js"
+  },
+  "dependencies": {
+    "@apify/log": "^3.0.1",
+    "apify": "^3.7.0",
+    "cheerio": "^1.1.0",
+    "crawlee": "^3.18.0",
+    "playwright": "^1.55.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@apify/tsconfig": "^0.2.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.3"
+  }
+}

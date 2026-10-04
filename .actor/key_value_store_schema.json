@@ -1,0 +1,12 @@
+{
+  "actorKeyValueStoreSchemaVersion": 1,
+  "title": "Raporty i diagnostyka",
+  "collections": {
+    "reportMarkdown": { "title": "Raport Markdown", "key": "REPORT.md", "contentTypes": ["text/markdown; charset=utf-8"] },
+    "reportHtml": { "title": "Raport HTML", "key": "REPORT.html", "contentTypes": ["text/html; charset=utf-8"] },
+    "chatGptPrompt": { "title": "Pakiet do ChatGPT", "key": "CHATGPT_PROMPT.md", "contentTypes": ["text/markdown; charset=utf-8"] },
+    "runSummary": { "title": "Podsumowanie runu", "key": "RUN_SUMMARY.json", "contentTypes": ["application/json"] },
+    "excluded": { "title": "Odrzucone wyniki", "key": "EXCLUDED.json", "contentTypes": ["application/json"] },
+    "checkpoints": { "title": "Punkty kontrolne", "keyPrefix": "CHECKPOINT-", "contentTypes": ["application/json"] }
+  }
+}

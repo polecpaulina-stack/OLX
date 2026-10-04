@@ -1,0 +1,20 @@
+{
+  "actorSpecification": 1,
+  "name": "olx-market-research-actor",
+  "title": "OLX Market Research Assistant",
+  "description": "Analyze comparable public OLX.pl listings and prepare pricing guidance plus a ChatGPT-ready report.",
+  "version": "0.1",
+  "meta": {
+    "templateId": "ts-empty",
+    "generatedBy": "Codex with GPT-5"
+  },
+  "input": "./input_schema.json",
+  "output": "./output_schema.json",
+  "storages": {
+    "dataset": "./dataset_schema.json",
+    "keyValueStore": "./key_value_store_schema.json"
+  },
+  "dockerfile": "./Dockerfile",
+  "defaultMemoryMbytes": 1024,
+  "maxMemoryMbytes": 4096
+}
